@@ -4,7 +4,7 @@ export const fetchSongs = async (term = 'Talyor+Swift', limit = 200, media = 'mu
   try {
     const url = `${API_BASE_URL}?term=${term}&limit=${limit}&media=${media}`;
 
-    console.log('Fetching from:', url);
+    console.log('Fetching from iTunes API:', url);
 
     const response = await fetch(url);
 
@@ -18,13 +18,9 @@ export const fetchSongs = async (term = 'Talyor+Swift', limit = 200, media = 'mu
       throw new Error('Invalid API response format');
     }
 
-    const songs = data.results.filter(item =>
-      item.kind === 'song' ||
-      (item.wrapperType === 'track' && item.kind === 'song')
-    );
+    console.log(`API returned ${data.resultCount} results, using all available songs`);
 
-    console.log(`Fetched ${songs.length} songs`);
-    return songs;
+    return data.results;
 
   } catch (error) {
     console.error('Error fetching songs from iTunes API:', error);
