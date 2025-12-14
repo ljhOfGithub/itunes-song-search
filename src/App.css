@@ -5,7 +5,7 @@
 }
 
 .app-content {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -16,6 +16,13 @@
   background-clip: text;
   font-weight: 700 !important;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stats-box {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 12px 20px;
+  border-radius: 10px;
+  border-left: 4px solid #1976d2;
 }
 
 .search-section {
@@ -46,13 +53,36 @@
   min-height: 400px;
 }
 
+.pagination-info {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
 .pagination-container {
   display: flex;
   justify-content: center;
-  margin-top: 40px;
+  margin-top: 20px;
   padding: 20px;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
+}
+
+.song-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.song-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+@media (max-width: 1600px) {
+  .app-content {
+    max-width: 1400px;
+  }
 }
 
 @media (max-width: 1400px) {
@@ -91,6 +121,12 @@
     align-items: flex-start;
     gap: 8px;
   }
+
+  .stats-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
 }
 
 @keyframes fadeIn {
@@ -106,6 +142,7 @@
 }
 
 .search-section,
-.app-title {
+.app-title,
+.stats-box {
   animation: fadeIn 0.5s ease-out;
 }

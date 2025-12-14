@@ -11,6 +11,10 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Pagination from '@mui/material/Pagination';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import InfoIcon from '@mui/icons-material/Info';
 
 import SearchBar from './components/SearchBar';
 import SongList from './components/SongList';
@@ -18,7 +22,7 @@ import EmptyState from './components/EmptyState';
 
 import { fetchSongs, paginateData } from './utils/api';
 
-const ITEMS_PER_PAGE = 25;
+const ITEMS_PER_PAGE = 24;
 
 const App = () => {
   const [songs, setSongs] = useState([]);
@@ -90,6 +94,12 @@ const App = () => {
   const paginatedData = paginateData(filteredSongs, currentPage, ITEMS_PER_PAGE);
   const currentSongs = paginatedData.data;
 
+  const handleSongClick = (trackViewUrl) => {
+    if (trackViewUrl) {
+      window.open(trackViewUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   if (loading) {
     return (
       <Container maxWidth="lg" className="app-container">
@@ -101,17 +111,38 @@ const App = () => {
   }
 
   return (
-    <Container maxWidth="lg" className="app-container">
+    <Container maxWidth="xl" className="app-container">
       <Stack spacing={3} className="app-content">
-        <Typography variant="h3" align="center" className="app-title" gutterBottom>
-          iTunes Music Search
-        </Typography>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography variant="h3" className="app-title" gutterBottom>
+            iTunes Music Search
+          </Typography>
+          <Tooltip title="Search, sort and click on songs to view details on iTunes">
+            <IconButton>
+              <InfoIcon />
+            </IconButton>
+          </Tooltip>
+        </Stack>
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
           </Alert>
         )}
+
+        <Box className="stats-box">
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Typography variant="body1" fontWeight="medium">
+              Total Songs: {songs.length}
+            </Typography>
+            <Typography variant="body1" fontWeight="medium">
+              Filtered: {filteredSongs.length}
+            </Typography>
+            <Tooltip title="API limit is 200 but may return up to 210 songs">
+              <InfoIcon fontSize="small" color="action" />
+            </Tooltip>
+          </Stack>
+        </Box>
 
         <Stack spacing={2} className="search-section">
           <SearchBar
@@ -153,17 +184,6 @@ const App = () => {
           </Stack>
         </Stack>
 
-        {filteredSongs.length > 0 && (
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Typography variant="body1" color="text.secondary">
-              Found {filteredSongs.length} songs
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Page {currentPage} of {paginatedData.totalPages} (25 per page)
-            </Typography>
-          </Stack>
-        )}
-
         {filteredSongs.length === 0 ? (
           <EmptyState
             message={searchTerm
@@ -173,8 +193,27 @@ const App = () => {
           />
         ) : (
           <>
-            <Box sx={{ minHeight: '600px' }}>
-              <SongList songs={currentSongs} />
+            <Box sx={{ minHeight: '625px' }}>
+              <SongList
+                songs={currentSongs}
+                onSongClick={handleSongClick}
+              />
+            </Box>
+
+            <Box className="pagination-info">
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Typography variant="body2" color="text.secondary">
+                  Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, filteredSongs.length)} of {filteredSongs.length} songs
+                </Typography>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Typography variant="body2" color="text.secondary">
+                    Page {currentPage} of {paginatedData.totalPages}
+                  </Typography>
+                  <Tooltip title="24 songs per page">
+                    <InfoIcon fontSize="small" color="action" />
+                  </Tooltip>
+                </Stack>
+              </Stack>
             </Box>
 
             {paginatedData.totalPages > 1 && (
